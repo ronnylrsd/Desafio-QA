@@ -23,3 +23,18 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add('setupUserAndSession', function(userCredentials) {
+    cy.postUser(userCredentials).its('body.userID').as('userID').then(userID => {
+        this.userID = userID;
+    });
+
+    cy.postToken(userCredentials).its('body.token').as('token').then(token => {
+        this.token = token;
+    });
+
+    cy.listBooks().its('body.books').then(books => {
+        const isbns = books.map(book => book.isbn);
+        cy.wrap(isbns).as('isbnList');
+        this.isbnList = isbns;
+    });
+});

@@ -15,5 +15,13 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
-import './pages/api/BookStoreAPI.page.js'
-import '@faker-js/faker'
+import './pages/api/CriarUsuario.page.js'
+import './pages/api/CriarToken.page.js'
+import './pages/api/Autorizado.page.js'
+import './pages/api/ListarLivros.page.js'
+import './pages/api/AlugarLivros.page.js'
+import './pages/api/ListarDetalhesDoUsuario.page.js'
+
+Cypress.on('uncaught:exception', (err, runnable) => {
+    return false;
+  });
