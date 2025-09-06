@@ -6,6 +6,7 @@ module.exports = defineConfig({
     viewportHeight: 720,
     watchForFileChanges: false,
     specPattern: 'cypress/e2e/**/*.feature',
+    baseUrl: 'https://demoqa.com',
 
     setupNodeEvents(on, config) {
       const cucumber = require('cypress-cucumber-preprocessor').default;
