@@ -11,3 +11,18 @@ Funcionalidade: Testar formulário de registro de estudante
         E o usuário clica em 'submit'
         Então o sistema deve exibir um pop-up de confirmação com os dados corretos
         E o usuário clica em 'close'
+
+    Cenário: Tentar registrar um estudante apenas com campos obrigatórios
+        Quando o usuário preenche o formulário apenas com os campos obrigatórios
+        E o usuário clica em 'submit'
+        Então o sistema deve exibir um pop-up de confirmação com os dados corretos
+        E o usuário clica em 'close'
+
+    Cenário: Tentar registrar um estudante sem preencher o formulário
+        Quando o usuário clica em 'submit'
+        Então o sistema não deve exibir o pop-up de confirmação
+
+    Cenário: Tentar registrar um estudante com dados inválidos
+        Quando o usuário preenche o formulário com dados inválidos
+        E o usuário clica em 'submit'
+        Então o sistema não deve exibir o pop-up de confirmação

@@ -23,3 +23,11 @@ export const generateStudent = () => {
         address: faker.address.streetAddress(),
     };
 };
+
+export const generateInvalidStudent = () => {
+    return {
+        firstName: faker.random.numeric(10),
+        lastName: faker.random.numeric(10),
+        mobile: faker.random.alpha(10),  
+    };
+};

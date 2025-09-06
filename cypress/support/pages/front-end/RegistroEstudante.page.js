@@ -13,24 +13,49 @@ const StudentRegistrationFormMapping = {
     'submit': '#submit'
 }
 
-Cypress.Commands.add('fillStudentForm', (studentData) => {
-    cy.get(StudentRegistrationFormMapping.firstName).type(studentData.firstName);
-    cy.get(StudentRegistrationFormMapping.lastName).type(studentData.lastName);
-    cy.get(StudentRegistrationFormMapping.email).type(studentData.email);
-    cy.selectRandomGender();
-    cy.get(StudentRegistrationFormMapping.mobile).type(studentData.mobile);
+Cypress.Commands.add('fillStudentForm', (studentData, options = {}) => {
+    const allFields = ['firstName', 'lastName', 'email', 'gender', 'mobile', 'birthDate', 'subjects', 'hobbies', 'picture', 'address', 'state', 'city'];
+    const fieldsToFill = options.fields || allFields;
 
-    cy.selectBirthDate(studentData.birthDate);
-
-    studentData.subjects.forEach(subject => {
-        cy.get(StudentRegistrationFormMapping.subjects).type(subject);
-        cy.get('.subjects-auto-complete__option').contains(subject).click();
-    });
-    cy.selectRandomHobbies();
-    cy.uploadRandomPicture();
-    cy.get(StudentRegistrationFormMapping.address).type(studentData.address);
-    cy.selectRandomDropdownOption(StudentRegistrationFormMapping.state);
-    cy.selectRandomDropdownOption(StudentRegistrationFormMapping.city);
+    if (fieldsToFill.includes('firstName')) {
+        cy.get(StudentRegistrationFormMapping.firstName).type(studentData.firstName);
+    }
+    if (fieldsToFill.includes('lastName')) {
+        cy.get(StudentRegistrationFormMapping.lastName).type(studentData.lastName);
+    }
+    if (fieldsToFill.includes('email')) {
+        cy.get(StudentRegistrationFormMapping.email).type(studentData.email);
+    }
+    if (fieldsToFill.includes('gender')) {
+        cy.selectRandomGender();
+    }
+    if (fieldsToFill.includes('mobile')) {
+        cy.get(StudentRegistrationFormMapping.mobile).type(studentData.mobile);
+    }
+    if (fieldsToFill.includes('birthDate')) {
+        cy.selectBirthDate(studentData.birthDate);
+    }
+    if (fieldsToFill.includes('subjects') && studentData.subjects) {
+        studentData.subjects.forEach(subject => {
+            cy.get(StudentRegistrationFormMapping.subjects).type(subject);
+            cy.get('.subjects-auto-complete__option').contains(subject).click();
+        });
+    }
+    if (fieldsToFill.includes('hobbies')) {
+        cy.selectRandomHobbies();
+    }
+    if (fieldsToFill.includes('picture')) {
+        cy.uploadRandomPicture();
+    }
+    if (fieldsToFill.includes('address')) {
+        cy.get(StudentRegistrationFormMapping.address).type(studentData.address);
+    }
+    if (fieldsToFill.includes('state')) {
+        cy.selectRandomDropdownOption(StudentRegistrationFormMapping.state);
+    }
+    if (fieldsToFill.includes('city')) {
+        cy.selectRandomDropdownOption(StudentRegistrationFormMapping.city);
+    }
 });
 
 Cypress.Commands.add('selectBirthDate', (birthDate) => {
