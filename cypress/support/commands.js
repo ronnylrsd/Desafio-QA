@@ -38,3 +38,7 @@ Cypress.Commands.add('setupUserAndSession', function(userCredentials) {
         this.isbnList = isbns;
     });
 });
+
+Cypress.Commands.add('navigateToSection', (sectionName) => {
+    cy.contains('h5', sectionName).click();
+});

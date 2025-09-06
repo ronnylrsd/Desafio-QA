@@ -1,9 +1,9 @@
-import { And, Given } from "cypress-cucumber-preprocessor/steps";
+import { And, Given, When, Then } from "cypress-cucumber-preprocessor/steps";
 import { generateStudent, generateInvalidStudent } from '../../factories/studentFactory';
 
 Given('que o usuário acessa a página de registro de estudante', () => {
     cy.visit('/');
-    cy.contains('h5', 'Forms').click();
+    cy.navigateToSection('Forms');
     cy.contains('span', 'Practice Form').click();
     cy.url().should('include', '/automation-practice-form');
 });
