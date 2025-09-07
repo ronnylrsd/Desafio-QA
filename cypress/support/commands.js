@@ -47,3 +47,7 @@ Cypress.Commands.add('getRowByText', (text) => {
     return cy.contains('.rt-td', text)
             .closest('.rt-tr-group');
 });
+
+Cypress.Commands.add('navigateToSubmenu', (submenuName) => {
+    cy.contains('span', submenuName).click();
+});
