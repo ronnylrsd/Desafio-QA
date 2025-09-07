@@ -79,4 +79,36 @@ Cypress.Commands.add('verifyNonExistenItem', (item) => {
         .should('not.contain', item.firstName)
         .and('not.contain', item.lastName)
         .and('not.contain', item.email)
+});
+
+Cypress.Commands.add('getTableRowCount', () => {
+    const tableRowsSelector = '.rt-tr-group[role="row"]:not(.-padRow)';
+    return cy.get('.rt-tbody').then($tbody => {
+        return $tbody.find(tableRowsSelector).length;
+    });
+});
+
+Cypress.Commands.add('addTableRecord', (item) => {
+    cy.clickOn('Add');
+    cy.fillTableForm(item);
+    cy.clickOn('Submit');
+});
+
+Cypress.Commands.add('verifyCreatedItems', (addedItems) => {
+    const searchBoxSelector = '#searchBox';
+    addedItems.forEach(item => {
+        cy.log(`Verificando o item via busca: ${item.email}`);
+        cy.get(searchBoxSelector).clear().type(item.email);
+        cy.verifyTableRowData(item);
+    });
+    cy.get(searchBoxSelector).clear();
+})
+
+Cypress.Commands.add('removeCreatedItems', (addedItems) => {
+    addedItems.forEach(item => {
+        cy.log(`Deletando o item: ${item.email}`);
+        cy.getRowByText(item.email).within(() => {
+            cy.get('span[id^="delete-record-"]').click();
+        });
+    });
 })

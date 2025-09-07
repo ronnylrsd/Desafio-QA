@@ -44,3 +44,25 @@ Then('o sistema deve atualizar o registro na tabela sem os novos dados', functio
     });
 });
 
+Given('que o usuário cria {string} registros', function(itemsQtt) {
+    const count = parseInt(itemsQtt);
+    const addedItems = [];
+    for (let i = 0; i < count; i++) {
+        const newItem = generateTableItem();
+        addedItems.push(newItem);
+        cy.addTableRecord(newItem);
+    }
+    cy.wrap(addedItems).as('addedItems');
+});
+
+Then('o sistema deve atualizar a tabela com os registros', () => {
+    cy.get('@addedItems').then(addedItems => {
+        cy.verifyCreatedItems(addedItems);
+    });
+})
+
+And('o usuário deleta todos os novos registros criados', () => {
+    cy.get('@addedItems').then(addedItems => {
+        cy.removeCreatedItems(addedItems);
+    });
+})
