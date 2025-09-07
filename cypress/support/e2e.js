@@ -22,6 +22,7 @@ import './pages/api/ListarLivros.page.js'
 import './pages/api/AlugarLivros.page.js'
 import './pages/api/ListarDetalhesDoUsuario.page.js'
 import './pages/front-end/RegistroEstudante.page.js'
+import './pages/front-end/TabelasWeb.page.js'
 
 Cypress.on('uncaught:exception', (err, runnable) => {
     return false;

@@ -42,3 +42,8 @@ Cypress.Commands.add('setupUserAndSession', function(userCredentials) {
 Cypress.Commands.add('navigateToSection', (sectionName) => {
     cy.contains('h5', sectionName).click();
 });
+
+Cypress.Commands.add('getRowByText', (text) => {
+    return cy.contains('.rt-td', text)
+            .closest('.rt-tr-group');
+});
