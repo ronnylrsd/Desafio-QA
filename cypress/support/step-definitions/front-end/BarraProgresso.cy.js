@@ -1,4 +1,4 @@
-import { And, Given } from "cypress-cucumber-preprocessor/steps";
+import { And, Given, When, Then } from "cypress-cucumber-preprocessor/steps";
 
 Given('que o usuário acessa a página de widgets', () => {
     cy.visit('/');

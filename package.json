@@ -13,6 +13,7 @@
     "stepDefinitions": "cypress/support/step-definitions/"
   },
   "devDependencies": {
+    "@4tw/cypress-drag-drop": "^2.3.0",
     "@faker-js/faker": "^7.6.0",
     "cypress": "^15.1.0",
     "cypress-cucumber-preprocessor": "^4.3.1"
