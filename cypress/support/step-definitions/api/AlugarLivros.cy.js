@@ -1,8 +1,10 @@
 import { Given, When, Then } from "cypress-cucumber-preprocessor/steps";
 import users from '../../../fixtures/users.json'
+import { generateValidUser } from "../../factories/userFactory";
 
 Given('que o usuário está autenticado com livros disponíveis', function() {
-    cy.setupUserAndSession(users.anotherValidUser);
+    const validUser = generateValidUser();
+    cy.setupUserAndSession(validUser);
 });
 
 When('o usuário seleciona {string} livros para alugar', function(booksQtd) {
@@ -25,10 +27,6 @@ Given('que o usuário tenta realizar o aluguel sem estar autenticado', function(
 
 Then('o sistema deve retornar uma mensagem de erro de campo inválido', () => {
     cy.checkBooksAPIResponse('idMissing');
-});
-
-Given('que o usuário tem os dados válidos 2 de autenticação', () => {
-    cy.setupUserAndSession(users.another2ValidUser);
 });
 
 When('o usuário seleciona um livro com ID inválido para alugar', function () {

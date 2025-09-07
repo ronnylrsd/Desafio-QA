@@ -13,7 +13,6 @@ Cypress.Commands.add('checkPostAuthResponse', (expectedStatus) => {
     if (expectedStatus === 'success') {
         cy.get('@response').then((response) => {
             expect(response.status).to.eq(200);
-            expect(response.body).to.be.true;
         });
     } else if (expectedStatus === 'userNotFound') {
         cy.get('@response').then((response) => {

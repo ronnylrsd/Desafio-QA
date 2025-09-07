@@ -1,8 +1,11 @@
 import { When, Then } from 'cypress-cucumber-preprocessor/steps'
 import users from '../../../fixtures/users.json'
+import { generateValidUser } from '../../factories/userFactory';
 
 When('o usuário tenta criar um token com dados válidos', () => {
-    cy.postToken(users.validUser).as('response');
+    const validUser = generateValidUser();
+    cy.postUser(validUser).as('response');
+    cy.postToken(validUser).as('response');
 });
 
 Then('o token deve ser criado com sucesso', () => {

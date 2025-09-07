@@ -1,8 +1,16 @@
 import { When, Then } from "cypress-cucumber-preprocessor/steps";
 import users from '../../../fixtures/users.json'
+import { generateValidUser } from "../../factories/userFactory";
 
 When('o usuário tenta entrar com dados válidos', () => {
-    cy.postAuth(users.validUser).as('response');
+    const validUser = generateValidUser();
+    cy.postUser(validUser);
+    cy.log(validUser.userName)
+    cy.log(validUser.password)
+    cy.postAuth(validUser).then((response) => {
+        cy.log('Auth response: ' + JSON.stringify(response.body));
+        cy.wrap(response).as('response');
+    });
 });
 
 Then('o usuário deve estar autorizado', () => {

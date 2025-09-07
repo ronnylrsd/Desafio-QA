@@ -1,12 +1,19 @@
 import { When, Then } from 'cypress-cucumber-preprocessor/steps'
 import users from '../../../fixtures/users.json'
+import { generateValidUser } from '../../factories/userFactory';
 
-When('o usuário tenta se cadastrar com dados válidos' , () => {
-    cy.postUser(users.validUser).as('response');
+When('o usuário tenta se cadastrar com dados válidos', () => {
+    const validUser = generateValidUser();
+    cy.log(`Username: ${validUser.userName}`);
+    cy.log(`Password: ${validUser.password}`);
+    cy.postUser(validUser).as('response');
 });
 
-Then('o sistema deve criar o Usuário com sucesso' , () => {
-    cy.checkPostUserResponse('success')
+Then('o sistema deve criar o Usuário com sucesso', () => {
+    cy.get('@response').then((response) => {
+        cy.log(`Response: ${JSON.stringify(response.body)}`);
+    });
+    cy.checkPostUserResponse('success');
 });
 
 When('o usuário tenta criar um usuário com uma senha simples' , () => {
