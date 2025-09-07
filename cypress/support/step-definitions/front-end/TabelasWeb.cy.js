@@ -6,7 +6,7 @@ Given('que o usuário acessa a página de tabelas da web', () => {
 });
 
 When('o usuário aperta no botão {string}', (button) => {
-    cy.clickOn(button)
+    cy.clickOnTW(button)
 });
 
 And('o usuário preenche o formulário para a tabela com dados válidos', () => {

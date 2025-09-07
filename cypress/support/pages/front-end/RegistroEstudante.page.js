@@ -134,7 +134,7 @@ Cypress.Commands.add('selectRandomDropdownOption', (containerSelector) => {
     });
 });
 
-Cypress.Commands.add('clickOn', (buttonText) => {
+Cypress.Commands.add('clickOnSR', (buttonText) => {
     if (buttonText.toLowerCase() === 'submit') {
         cy.get(StudentRegistrationFormMapping.submit).click();
     } else if (buttonText.toLowerCase() === 'close') {

@@ -14,7 +14,7 @@ When('o usuário preenche o formulário com dados válidos', () => {
 });
 
 And('o usuário clica em {string}', (button) => {
-    cy.clickOn(button);
+    cy.clickOnSR(button);
 });
 
 Then('o sistema deve exibir um pop-up de confirmação com os dados corretos', function() {

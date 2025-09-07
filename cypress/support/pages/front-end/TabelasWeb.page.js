@@ -15,7 +15,7 @@ Cypress.Commands.add('visitWebTables', () => {
     cy.url().should('include', '/webtables');
 });
 
-Cypress.Commands.add('clickOn', (button) => {
+Cypress.Commands.add('clickOnTW', (button) => {
     if (button === 'Add') {
             cy.get('#addNewRecordButton').click();
         } else if (button === 'Submit') {
@@ -58,9 +58,9 @@ Cypress.Commands.add('verifyTableRowData', (item) => {
 });
 
 Cypress.Commands.add('preAddItem', (item) => {
-    cy.clickOn('Add');
+    cy.clickOnTW('Add');
     cy.fillTableForm(item);
-    cy.clickOn('Submit');
+    cy.clickOnTW('Submit');
     cy.get('.rt-tbody').should('contain', item.email)
     cy.wrap(item).as('initialItem');
 })
@@ -89,9 +89,9 @@ Cypress.Commands.add('getTableRowCount', () => {
 });
 
 Cypress.Commands.add('addTableRecord', (item) => {
-    cy.clickOn('Add');
+    cy.clickOnTW('Add');
     cy.fillTableForm(item);
-    cy.clickOn('Submit');
+    cy.clickOnTW('Submit');
 });
 
 Cypress.Commands.add('verifyCreatedItems', (addedItems) => {
