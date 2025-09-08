@@ -8,7 +8,7 @@
 
 ## 💻 Projeto
 
-Este projeto foi criado para aplicar e demonstrar conhecimentos avançados em testes automatizados E2E. Utilizando **Cypress** e **Cucumber (Gherkin)**, a suíte valida múltiplos fluxos e regras de negócio da aplicação [DemoQA](https://demoqa.com), cobrindo tanto cenários de **Front-End (UI)** quanto de **API**.
+Este projeto foi criado para aplicar e demonstrar conhecimentos avançados em testes automatizados E2E, em **25** cenários de testes diferentes. Utilizando **Cypress** e **Cucumber (Gherkin)**, a suíte valida múltiplos fluxos e regras de negócio da aplicação [DemoQA](https://demoqa.com), cobrindo tanto cenários de **Front-End (UI)** quanto de **API**.
 
 ## ✨ Tecnologias
 
