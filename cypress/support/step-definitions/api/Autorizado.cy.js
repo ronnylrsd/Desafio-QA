@@ -5,12 +5,7 @@ import { generateValidUser } from "../../factories/userFactory";
 When('o usuário tenta entrar com dados válidos', () => {
     const validUser = generateValidUser();
     cy.postUser(validUser);
-    cy.log(validUser.userName)
-    cy.log(validUser.password)
-    cy.postAuth(validUser).then((response) => {
-        cy.log('Auth response: ' + JSON.stringify(response.body));
-        cy.wrap(response).as('response');
-    });
+    cy.postAuth(validUser);
 });
 
 Then('o usuário deve estar autorizado', () => {
@@ -18,7 +13,13 @@ Then('o usuário deve estar autorizado', () => {
 });
 
 When('o usuário tenta entrar com dados inválidos', () => {
-    cy.postAuth(users.userWithBadPassword).as('response');
+    const validUser = generateValidUser();
+    cy.postUser(validUser);
+    const credentialsWithWrongPass = {
+        userName: validUser.userName,
+        password: 'senha-errada-propositalmente'
+    };
+    cy.postAuth(credentialsWithWrongPass);
 });
 
 Then('o usuário não deve estar autorizado com dados inválidos', () => {

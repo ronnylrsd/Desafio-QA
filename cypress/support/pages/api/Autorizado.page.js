@@ -5,26 +5,24 @@ Cypress.Commands.add('postAuth', (authPayload) => {
             url: urls.APIauth,
             body: authPayload,
             failOnStatusCode: false
-        })
+        }).as('response');
     });
 });
 
-Cypress.Commands.add('checkPostAuthResponse', (expectedStatus) => {
-    if (expectedStatus === 'success') {
-        cy.get('@response').then((response) => {
-            expect(response.status).to.eq(200);
-        });
-    } else if (expectedStatus === 'userNotFound') {
-        cy.get('@response').then((response) => {
-            expect(response.status).to.eq(404);
-            expect(response.body.message).to.eq("User not found!");
-        });
-    } else if (expectedStatus === 'failure') {
-        cy.get('@response').then((response) => {
-            expect(response.status).to.eq(400);
-            expect(response.body.message).to.eq("UserName and Password required.");
-        });
-    } else {
-        throw new Error('Invalid expectedStatus value');
-    }
+Cypress.Commands.add('checkPostAuthResponse', (scenario) => {
+    const scenarios = {
+        success: { status: 200 },
+        userNotFound: { status: 404, message: "User not found!" },
+        failure: { status: 400, message: "UserName and Password required." }
+    };
+
+    const expected = scenarios[scenario];
+    if (!expected) throw new Error(`Cenário de validação inválido: ${scenario}`);
+
+    cy.get('@response').then((response) => {
+        expect(response.status).to.eq(expected.status);
+        if (expected.message) {
+            expect(response.body.message).to.eq(expected.message);
+        }
+    });
 });

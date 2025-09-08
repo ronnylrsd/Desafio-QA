@@ -21,8 +21,6 @@ Then('o sistema deve confirmar que os livros foram alugados com sucesso', () => 
     cy.checkBooksAPIResponse('success');
 });
 
-// Remova o 'Dado que o usuário tenta realizar o aluguel sem estar autenticado'
-
 When('o usuário tenta alugar um livro sem estar autenticado', function() {
     const invalidToken = 'token_invalido';
     const invalidUserId = 'id_invalido';
