@@ -1,11 +1,21 @@
-const RegistrationFormMapping = {
-    'firstName': '#firstName',
-    'lastName': '#lastName',
-    'email': '#userEmail',
-    'age': '#age',
-    'salary': '#salary',
-    'department': '#department',
-    'submit': '#submit'
+const selectors = {
+    registrationForm: {
+        firstName: '#firstName',
+        lastName: '#lastName',
+        email: '#userEmail',
+        age: '#age',
+        salary: '#salary',
+        department: '#department',
+        submit: '#submit'
+    },
+    table: {
+        addButton: '#addNewRecordButton',
+        searchBox: '#searchBox',
+        rowByText: (text) => cy.contains('.rt-td', text).closest('.rt-tr-group'),
+        editButtonInRow: (row) => row.find('span[id^="edit-record-"]'),
+        deleteButtonInRow: (row) => row.find('span[id^="delete-record-"]'),
+        tbody: '.rt-tbody',
+    }
 }
 
 Cypress.Commands.add('visitWebTables', () => {
@@ -15,35 +25,43 @@ Cypress.Commands.add('visitWebTables', () => {
     cy.url().should('include', '/webtables');
 });
 
-Cypress.Commands.add('clickOnTW', (button) => {
-    if (button === 'Add') {
-            cy.get('#addNewRecordButton').click();
-        } else if (button === 'Submit') {
-            cy.get('#submit').click();
-        } else if (button === 'Edit') {
-            cy.get('@initialItem').then((item) => {
-                cy.getRowByText(item.email).within(() => {
-                    cy.wait(2000)
-                    cy.get('span[id^="edit-record-"]').click();
-                });
-            });
-        } else if (button === 'Delete') {
-            cy.get('@initialItem').then((item) => {
-                cy.getRowByText(item.email).within(() => {
-                    cy.wait(2000)
-                    cy.get('span[id^="delete-record-"]').click();
-                });
-            });
-    }
+Cypress.Commands.add('clickAddButton', () => {
+    cy.get(selectors.table.addButton).click();
+});
+
+Cypress.Commands.add('clickSubmitOnModal', () => {
+    cy.get(selectors.registrationForm.submit).click();
 });
 
 Cypress.Commands.add('fillTableForm', (tableData) => {
-    cy.get(RegistrationFormMapping.firstName).type(tableData.firstName);
-    cy.get(RegistrationFormMapping.lastName).type(tableData.lastName);
-    cy.get(RegistrationFormMapping.email).type(tableData.email);
-    cy.get(RegistrationFormMapping.age).type(tableData.age);
-    cy.get(RegistrationFormMapping.salary).type(tableData.salary);
-    cy.get(RegistrationFormMapping.department).type(tableData.department);
+    cy.get(selectors.registrationForm.firstName).clear().type(tableData.firstName);
+    cy.get(selectors.registrationForm.lastName).clear().type(tableData.lastName);
+    cy.get(selectors.registrationForm.email).clear().type(tableData.email);
+    cy.get(selectors.registrationForm.age).clear().type(tableData.age);
+    cy.get(selectors.registrationForm.salary).clear().type(tableData.salary);
+    cy.get(selectors.registrationForm.department).clear().type(tableData.department);
+});
+
+Cypress.Commands.add('editRecordByEmail', (email, newData) => {
+    selectors.table.rowByText(email).within(() => {
+        cy.wait(2000);
+        cy.get('span[id^="edit-record-"]').click();
+    });
+    cy.fillTableForm(newData);
+    cy.clickSubmitOnModal();
+});
+
+Cypress.Commands.add('deleteRecordByEmail', (email) => {
+    selectors.table.rowByText(email).within(() => {
+        cy.wait(2000);
+        cy.get('span[id^="delete-record-"]').click();
+    });
+});
+
+Cypress.Commands.add('addNewRecord', (itemData) => {
+    cy.clickAddButton();
+    cy.fillTableForm(itemData);
+    cy.clickSubmitOnModal();
 });
 
 Cypress.Commands.add('verifyTableRowData', (item) => {
@@ -57,58 +75,29 @@ Cypress.Commands.add('verifyTableRowData', (item) => {
     });
 });
 
-Cypress.Commands.add('preAddItem', (item) => {
-    cy.clickOnTW('Add');
-    cy.fillTableForm(item);
-    cy.clickOnTW('Submit');
-    cy.get('.rt-tbody').should('contain', item.email)
-    cy.wrap(item).as('initialItem');
-})
-
-Cypress.Commands.add('updateTableForm', (item) => {
-    cy.get(RegistrationFormMapping.firstName).clear().type(item.firstName);
-    cy.get(RegistrationFormMapping.lastName).clear().type(item.lastName);
-    cy.get(RegistrationFormMapping.email).clear().type(item.email);
-    cy.get(RegistrationFormMapping.age).clear().type(item.age);
-    cy.get(RegistrationFormMapping.salary).clear().type(item.salary);
-    cy.get(RegistrationFormMapping.department).clear().type(item.department);
-});
-
-Cypress.Commands.add('verifyNonExistenItem', (item) => {
+Cypress.Commands.add('verifyNonExistentItem', function(item) {
     cy.get('.rt-tbody')
         .should('not.contain', item.firstName)
         .and('not.contain', item.lastName)
         .and('not.contain', item.email)
 });
 
-Cypress.Commands.add('getTableRowCount', () => {
-    const tableRowsSelector = '.rt-tr-group[role="row"]:not(.-padRow)';
-    return cy.get('.rt-tbody').then($tbody => {
-        return $tbody.find(tableRowsSelector).length;
-    });
+Cypress.Commands.add('verifyCreatedItemsRecursively', (itemsArray) => {
+    if (itemsArray.length === 0) return;
+    const item = itemsArray.shift();
+    cy.get(selectors.table.searchBox).clear().type(item.email);
+    cy.verifyTableRowData(item);
+    cy.verifyCreatedItemsRecursively(itemsArray);
 });
 
-Cypress.Commands.add('addTableRecord', (item) => {
-    cy.clickOnTW('Add');
-    cy.fillTableForm(item);
-    cy.clickOnTW('Submit');
+Cypress.Commands.add('removeCreatedItemsRecursively', (itemsArray) => {
+    if (itemsArray.length === 0) {
+        cy.get(selectors.table.searchBox).clear();
+        return;
+    };
+    const item = itemsArray.shift();
+    cy.get(selectors.table.searchBox).clear().type(item.email);
+    cy.deleteRecordByEmail(item.email);
+    cy.verifyNonExistentItem(item);
+    cy.removeCreatedItemsRecursively(itemsArray);
 });
-
-Cypress.Commands.add('verifyCreatedItems', (addedItems) => {
-    const searchBoxSelector = '#searchBox';
-    addedItems.forEach(item => {
-        cy.log(`Verificando o item via busca: ${item.email}`);
-        cy.get(searchBoxSelector).clear().type(item.email);
-        cy.verifyTableRowData(item);
-    });
-    cy.get(searchBoxSelector).clear();
-})
-
-Cypress.Commands.add('removeCreatedItems', (addedItems) => {
-    addedItems.forEach(item => {
-        cy.log(`Deletando o item: ${item.email}`);
-        cy.getRowByText(item.email).within(() => {
-            cy.get('span[id^="delete-record-"]').click();
-        });
-    });
-})

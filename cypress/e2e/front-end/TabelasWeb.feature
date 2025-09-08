@@ -3,28 +3,25 @@
 
 Funcionalidade: Tabelas da Web
 
-  Contexto: O usuário está na página de tabelas da web
-    Dado que o usuário acessa a página de tabelas da web
+  Contexto: 
+    Dado que o usuário está na página de tabelas da web
 
   Cenário: Criar um novo registro na tabela
-    Quando o usuário aperta no botão 'Add'
-    E o usuário preenche o formulário para a tabela com dados válidos
-    E o usuário aperta no botão 'Submit'
-    Então o sistema deve adicionar o novo registro à tabela
+    Quando o usuário adiciona um novo registro com dados válidos
+    Então o registro deve ser exibido corretamente na tabela
 
-  Cenário: Editar o novo registro na tabela
-    Dado que um registro foi adicionado à tabela com dados conhecidos
-    Quando o usuário aperta no botão 'Edit'
-    E o usuário edita este registro com novos dados válidos
-    E o usuário aperta no botão 'Submit'
-    Então o sistema deve atualizar o registro na tabela com os novos dados
+  Cenário: Editar um registro existente na tabela
+    Dado que um registro foi adicionado à tabela
+    Quando o usuário edita este registro com novos dados
+    Então o registro deve ser exibido na tabela com os dados atualizados
 
-  Cenário: Remover o novo registro na tabela
-    Dado que um registro foi adicionado à tabela com dados conhecidos
-    Quando o usuário aperta no botão 'Delete'
-    Então o sistema deve atualizar o registro na tabela sem os novos dados
+  Cenário: Remover um registro existente da tabela
+    Dado que um registro foi adicionado à tabela
+    Quando o usuário remove este registro
+    Então o registro não deve mais ser exibido na tabela
 
-  Cenário: Criar 12 registros de forma dinâmica através do cucumber
-    Dado que o usuário cria '12' registros
-    Então o sistema deve atualizar a tabela com os registros
-    E o usuário deleta todos os novos registros criados
+  Cenário: Criar e remover 12 registros dinamicamente
+    Quando o usuário adiciona '12' novos registros na tabela
+    Então todos os '12' registros devem existir na tabela
+    E o usuário remove todos os registros criados
+    Então eles não devem mais ser exibidos na tabela

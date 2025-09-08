@@ -6,7 +6,7 @@ Cypress.Commands.add('listUserDetails', (token, userId) => {
             headers: { 'Authorization': `Bearer ${token}` },
             failOnStatusCode: false
         }).as('response').then((response) => {
-            if (response.status === 200) { // Só loga em caso de sucesso
+            if (response.status === 200) {
                 cy.log('**📋 Detalhes do Usuário:**');
                 cy.log(`- ID do Usuário: ${response.body.userId}`);
                 cy.log(`- Nome de Usuário: ${response.body.username}`);
