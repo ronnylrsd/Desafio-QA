@@ -1,16 +1,27 @@
 import { Given, When, Then } from "cypress-cucumber-preprocessor/steps";
-import users from '../../../fixtures/users.json'
+import { generateValidUser } from '../../factories/userFactory';
 
-When('o usuário pede para listar os detalhes de um usuário que existe', function() {
-    cy.listUserDetails(users.userWithTokenAndID.token, users.userWithTokenAndID.userID);
+Given('que um usuário está autenticado no sistema', function() {
+    const user = generateValidUser();
+    cy.setupUserAndSession(user);
+});
+
+When('o usuário pede para listar seus detalhes', function() {
+    cy.get('@token').then(token => {
+        cy.get('@userID').then(userID => {
+            cy.listUserDetails(token, userID);
+        });
+    });
 });
 
 Then('o sistema deve retornar os detalhes do usuário autenticado', () => {
     cy.checkUserDetailsResponse('success');
 });
 
-Given('o usuário pede para listar os detalhes de um usuário sem fornecer um token de autenticação', function() {
-    cy.listUserDetails('token_invalido', users.userWithTokenAndID.userID);
+Given('o usuário tenta listar os detalhes sem um token de autenticação', function() {
+    cy.get('@userID').then(userID => {
+        cy.listUserDetails('token_invalido', userID);
+    });
 });
 
 Then('o sistema deve retornar uma mensagem de erro de autenticação', () => {
