@@ -15,7 +15,7 @@ Este projeto foi criado para aplicar e demonstrar conhecimentos avançados em te
 A execução desta suíte de automação não serviu apenas como uma rede de segurança para regressões, mas também como uma poderosa ferramenta para a descoberta de novos defeitos. Os principais bugs encontrados foram formalmente documentados no plano de testes abaixo:
 
 <a href="https://docs.google.com/document/d/1n-_H8MgSUJgroqRIZQteq7N6_WKkI-uv4FH6c6gPZyA/edit?usp=sharing" target="_blank">
-    * 📄 Plano de Testes e Relatório de Bugs Encontrados]()
+    📄 Plano de Testes e Relatório de Bugs Encontrados
 </a>
 
 ## ✨ Tecnologias
