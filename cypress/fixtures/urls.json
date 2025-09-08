@@ -1,0 +1,7 @@
+{
+    "APIcreateUser": "https://demoqa.com/Account/v1/User",
+    "APIcreateToken": "https://demoqa.com/Account/v1/GenerateToken",
+    "APIauth": "https://demoqa.com/Account/v1/Authorized",
+    "APIbooks": "https://demoqa.com/BookStore/v1/Books",
+    "APIuser": "https://demoqa.com/Account/v1/User"
+}
