@@ -8,11 +8,19 @@
 
 ## 💻 Projeto
 
-Este projeto foi criado para aplicar e demonstrar conhecimentos avançados em testes automatizados E2E, em **25** cenários de testes diferentes. Utilizando **Cypress** e **Cucumber (Gherkin)**, a suíte valida múltiplos fluxos e regras de negócio da aplicação [DemoQA](https://demoqa.com), cobrindo tanto cenários de **Front-End (UI)** quanto de **API**.
+Este projeto foi criado para aplicar e demonstrar conhecimentos avançados em testes automatizados E2E, cobrindo **25 cenários de teste**. Utilizando **Cypress** e **Cucumber (Gherkin)**, a suíte valida múltiplos fluxos e regras de negócio da aplicação [DemoQA](https://demoqa.com), abrangendo tanto a camada de **Front-End (UI)** quanto de **API**.
+
+## 🐞 Relatório de Defeitos (Bugs)
+
+A execução desta suíte de automação não serviu apenas como uma rede de segurança para regressões, mas também como uma poderosa ferramenta para a descoberta de novos defeitos. Os principais bugs encontrados foram formalmente documentados no plano de testes abaixo:
+
+<a href="https://docs.google.com/document/d/1n-_H8MgSUJgroqRIZQteq7N6_WKkI-uv4FH6c6gPZyA/edit?usp=sharing" target="_blank">
+    * 📄 Plano de Testes e Relatório de Bugs Encontrados]()
+</a>
 
 ## ✨ Tecnologias
 
-Esse projeto foi desenvolvido com as seguintes tecnologias:
+Este projeto foi desenvolvido com as seguintes tecnologias:
 
 - **NodeJS:** Ambiente de execução JavaScript.
 - **Cypress:** Framework principal para a automação de testes E2E.
@@ -30,12 +38,12 @@ Este projeto foi desenvolvido seguindo práticas modernas de engenharia de quali
 
 - **Organização com Módulos de Comandos:** Adotamos uma abordagem pragmática para o Page Object Model. Em vez de classes, cada funcionalidade tem seu próprio "módulo de comandos" (`.page.js`) que centraliza seletores e ações de alto nível, mantendo os testes limpos e organizados.
 
-- **Fábricas de Dados Dinâmicos (Data Factories):** Para garantir a independência e a resiliência dos testes, utilizamos o Faker.js para criar dados únicos a cada execução (ex: usuários, senhas). Esta abordagem é superior ao uso de `fixtures` estáticas, pois evita conflitos de estado e torna os testes autocontidos.
+- **Fábricas de Dados Dinâmicos (Data Factories):** Para garantir a independência e a resiliência dos testes, utilizamos o Faker.js para criar dados únicos a cada execução. Esta abordagem é superior ao uso de `fixtures` estáticas, pois evita conflitos de estado e torna os testes autocontidos.
 
 - **Comandos Customizados de Alto Nível:** Ações complexas e reutilizáveis foram abstraídas em comandos (`cy.addNewRecord()`, `cy.setupUserAndSession()`), criando uma DSL (Linguagem de Domínio Específico) que torna os steps dos testes extremamente legíveis e declarativos.
 
 - **Estratégias para Testes Robustos:** Foram aplicadas técnicas avançadas para eliminar instabilidade ("flakiness"):
-    - **Comandos Recursivos:** Para interações complexas que modificam o DOM em sequência (como ordenação de listas e criação/deleção em massa), utilizamos comandos recursivos para garantir que cada ação termine antes da próxima começar, respeitando a fila de comandos do Cypress.
+    - **Comandos Recursivos:** Para interações complexas que modificam o DOM em sequência (como ordenação de listas e criação/deleção em massa), utilizamos comandos recursivos para garantir que cada ação termine antes da próxima começar.
 
 ## 🧠 Desafios Técnicos e Soluções Implementadas
 
