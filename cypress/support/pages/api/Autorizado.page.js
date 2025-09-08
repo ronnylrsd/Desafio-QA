@@ -11,18 +11,35 @@ Cypress.Commands.add('postAuth', (authPayload) => {
 
 Cypress.Commands.add('checkPostAuthResponse', (scenario) => {
     const scenarios = {
-        success: { status: 200 },
-        userNotFound: { status: 404, message: "User not found!" },
-        failure: { status: 400, message: "UserName and Password required." }
+        success: {
+            status: 200,
+            validateBody: (body) => {
+                expect(body).to.be.true;
+            }
+        },
+        userNotFound: {
+            status: 404,
+            validateBody: (body) => {
+                expect(body.message).to.eq("User not found!");
+            }
+        },
+        failure: {
+            status: 400,
+            validateBody: (body) => {
+                expect(body.message).to.eq("UserName and Password required.");
+            }
+        }
     };
 
     const expected = scenarios[scenario];
-    if (!expected) throw new Error(`Cenário de validação inválido: ${scenario}`);
+    if (!expected) {
+        throw new Error(`Cenário de validação inválido: ${scenario}`);
+    }
 
     cy.get('@response').then((response) => {
         expect(response.status).to.eq(expected.status);
-        if (expected.message) {
-            expect(response.body.message).to.eq(expected.message);
+        if (expected.validateBody) {
+            expected.validateBody(response.body);
         }
     });
 });
