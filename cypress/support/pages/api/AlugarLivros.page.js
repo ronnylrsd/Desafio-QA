@@ -1,3 +1,11 @@
+Cypress.Commands.add('pickRandomBooks', (quantity) => {
+    cy.get('@isbnList').then(isbnList => {
+        const randomIsbns = [...isbnList].sort(() => 0.5 - Math.random()).slice(0, quantity);
+        const collection = randomIsbns.map(isbn => ({ "isbn": isbn }));
+        cy.wrap(collection).as('collectionToRent');
+    });
+});
+
 Cypress.Commands.add('addBooksToCollection', (token, userId, collectionOfIsbns) => {
     cy.fixture('urls.json').then((urls) => {
         cy.request({
