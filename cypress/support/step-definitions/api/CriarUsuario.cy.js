@@ -21,7 +21,7 @@ Then('o sistema não permite se cadastrar com uma senha simples' , () => {
     cy.checkPostUserResponse('badPassword')
 });
 
-When('o usuário tenta se recadastrar' , () => {
+When('o usuário tenta cadastrar um usuário já existente' , () => {
     const existingUser = generateValidUser();
     cy.postUser(existingUser);
     cy.postUser(existingUser);

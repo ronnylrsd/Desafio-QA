@@ -12,5 +12,5 @@ Funcionalidade: Criar um usuário na API Book Store
         Então o sistema não permite se cadastrar com uma senha simples
 
     Cenário: Não criar um usuário que já existe
-        Quando o usuário tenta se recadastrar
+        Quando o usuário tenta cadastrar um usuário já existente
         Então o sistema não deve permitir o usuário ser cadastrado novamente
