@@ -9,10 +9,10 @@ And('o usuário clica em {string} no submenu', (submenuName) => {
     cy.navigateToSubmenu(submenuName);
 });
 
-When('que o usuário ordernou a lista de forma crescente', (order) => {
-    cy.sortVisibleListByNumber(order);
+When('que o usuário ordernou a lista de forma crescente', () => {
+    cy.sortListAscending();
 });
 
-Then('o sistema deve exibir os itens de forma crescente', (order) => {
-    cy.checkOrder(order);
+Then('o sistema deve exibir os itens de forma crescente', () => {
+    cy.checkListIsSortedAscending();
 })
