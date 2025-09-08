@@ -4,8 +4,8 @@ import { generateValidUser } from '../../factories/userFactory';
 
 When('o usuário tenta criar um token com dados válidos', () => {
     const validUser = generateValidUser();
-    cy.postUser(validUser).as('response');
-    cy.postToken(validUser).as('response');
+    cy.postUser(validUser).its('status').should('eq', 201);
+    cy.postToken(validUser);
 });
 
 Then('o token deve ser criado com sucesso', () => {

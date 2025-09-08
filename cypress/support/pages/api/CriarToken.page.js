@@ -5,23 +5,35 @@ Cypress.Commands.add('postToken', (tokenPayload) => {
             url: urls.APIcreateToken,
             body: tokenPayload,
             failOnStatusCode: false
-        });
+        }).as('tokenResponse');
     });
 });
 
-Cypress.Commands.add('checkPostTokenResponse', (expectedStatus) => {
-    if (expectedStatus === 'success') {
-        cy.get('@response').then((response) => {
-            expect(response.status).to.eq(200);
-            expect(response.body).to.have.property('token');
-            cy.wrap(response.body.token).as('token');
-        });
-    } else if (expectedStatus === 'failure') {
-        cy.get('@response').then((response) => {
-            expect(response.status).to.eq(400);
-            expect(response.body.message).to.eq("UserName and Password required.");
-        });
-    } else {
-        throw new Error('Invalid expectedStatus value');
+Cypress.Commands.add('checkPostTokenResponse', (scenarioName) => {
+    const scenarios = {
+        success: {
+            status: 200,
+            validateBody: (response) => {
+                expect(response.body).to.have.property('token');
+                cy.wrap(response.body.token).as('token');
+            }
+        },
+        failure: {
+            status: 400,
+            validateBody: (response) => {
+                expect(response.body.message).to.eq("UserName and Password required.");
+            }
+        }
+    };
+
+    const expected = scenarios[scenarioName];
+    if (!expected) {
+        throw new Error(`Cenário de validação desconhecido: '${scenarioName}'`);
     }
+    cy.get('@tokenResponse').then((response) => {
+        expect(response.status).to.eq(expected.status);
+        if (expected.validateBody) {
+            expected.validateBody(response);
+        }
+    });
 });
