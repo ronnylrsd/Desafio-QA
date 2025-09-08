@@ -37,6 +37,30 @@ Este projeto foi desenvolvido seguindo práticas modernas de engenharia de quali
 - **Estratégias para Testes Robustos:** Foram aplicadas técnicas avançadas para eliminar instabilidade ("flakiness"):
     - **Comandos Recursivos:** Para interações complexas que modificam o DOM em sequência (como ordenação de listas e criação/deleção em massa), utilizamos comandos recursivos para garantir que cada ação termine antes da próxima começar, respeitando a fila de comandos do Cypress.
 
+## 🧠 Desafios Técnicos e Soluções Implementadas
+
+Durante o desenvolvimento desta suíte de automação, diversos desafios técnicos foram encontrados. A seguir, uma descrição dos principais problemas e as soluções de engenharia aplicadas.
+
+* **Gerenciamento de Dependências:**
+    * **Desafio:** Foi identificada uma incompatibilidade entre a versão mais recente da biblioteca `faker-js` e o `cypress-cucumber-preprocessor` utilizado no projeto.
+    * **Solução:** Após análise, foi realizado um downgrade controlado da versão do `faker-js` para garantir a compatibilidade total, demonstrando a capacidade de gerenciar e resolver conflitos de dependência em um ambiente Node.js.
+
+* **Refatoração para Escalabilidade (Validações Condicionais):**
+    * **Desafio:** Comandos de validação com múltiplas condições inicialmente resultaram em longas cadeias de `if/else if`, um padrão de código de difícil manutenção.
+    * **Solução:** A lógica foi refatorada progressivamente, primeiro para `switch-case` e, finalmente, para um padrão de "Dicionário de Cenários". Esta técnica consiste em um objeto que mapeia cenários de teste a objetos de configuração (status esperado, funções de validação), resultando em um código mais limpo, declarativo e facilmente extensível (Princípio Aberto/Fechado).
+
+* **Lidando com Ações Assíncronas em Laço:**
+    * **Desafio:** Testes que exigiam ações repetitivas que modificam o DOM (como criar 12 registros em uma tabela ou ordenar uma lista com drag-and-drop) falhavam de forma intermitente. A causa raiz foi o uso de laços síncronos (`forEach`, `for`) que enfileiravam comandos assíncronos do Cypress de uma só vez, sem esperar a conclusão de cada ação.
+    * **Solução:** Foi implementado o padrão de **Comandos Recursivos**. Uma função customizada do Cypress chama a si mesma após a conclusão de cada ação, garantindo uma execução sequencial e síncrona com o DOM, o que resultou em testes 100% estáveis e com logs de depuração claros.
+
+* **Pragmatismo com Interações Complexas (Drag and Drop):**
+    * **Desafio:** A automação de interações de arrastar e soltar é notoriamente complexa e pode exigir soluções customizadas demoradas.
+    * **Solução:** Em vez de "reinventar a roda", foi pesquisada e integrada a biblioteca `@4tw/cypress-drag-drop`. Esta abordagem pragmática poupou tempo de desenvolvimento e aproveitou uma solução robusta e mantida pela comunidade.
+
+* **Arquitetura de Dados de Teste (Factories):**
+    * **Desafio:** A dependência de arquivos de `fixture` com dados estáticos tornava os testes frágeis e difíceis de escalar.
+    * **Solução:** Foram criadas **fábricas de dados** (`factories`) com o Faker.js. Essas funções geram dados dinâmicos e completos a cada chamada, garantindo que os testes sejam autocontidos, independentes e capazes de rodar em paralelo sem conflitos de estado.
+
 ## ⚙️ Configuração do Ambiente
 Siga os passos abaixo para configurar o ambiente e rodar os testes localmente:
 
@@ -63,13 +87,6 @@ Siga os passos abaixo para configurar o ambiente e rodar os testes localmente:
 
 ### Interação com Tabela (Adicionar/Remover)
 ![Interação com Tabela (Adicionar/Remover)](https://github.com/user-attachments/assets/e6dde930-097d-4c89-a9ac-d33c4f9ef5ed)
-
-
-## 🔭 OBSERVAÇÕES
-
-- Os testes foram desenhados para serem independentes, criando e limpando seus próprios dados quando necessário.
-- A suíte inclui testes de cenários positivos e de validação de erros (caminho infeliz).
-- A API da aplicação DemoQA demonstrou instabilidades e bugs durante os testes (ex: enviar campos vazios).
 
 ## 👷 COLABORADOR
 
