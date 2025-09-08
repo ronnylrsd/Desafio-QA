@@ -26,8 +26,6 @@ export const generateStudent = () => {
 
 export const generateInvalidStudent = () => {
     return {
-        firstName: faker.random.numeric(10),
-        lastName: faker.random.numeric(10),
         mobile: faker.random.alpha(10),  
     };
 };

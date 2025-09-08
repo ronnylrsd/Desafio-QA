@@ -1,4 +1,4 @@
-const StudentRegistrationFormMapping = {
+const selectors = {
     'firstName': '#firstName',
     'lastName': '#lastName',
     'email': '#userEmail',
@@ -10,56 +10,59 @@ const StudentRegistrationFormMapping = {
     'address': '#currentAddress',
     'state': '#state',
     'city': '#city',
-    'submit': '#submit'
+    'submit': '#submit',
+    modal: {
+        content: '.modal-content',
+        title: '.modal-title',
+        closeButton: '#closeLargeModal',
+        tableRow: (label) => cy.contains('td', label).next('td'),
+    }
 }
+
+Cypress.Commands.add('visitStudentForm', () => {
+    cy.visit('/');
+    cy.navigateToSection('Forms');
+    cy.contains('span', 'Practice Form').click();
+    cy.url().should('include', '/automation-practice-form');
+});
 
 Cypress.Commands.add('fillStudentForm', (studentData, options = {}) => {
     const allFields = ['firstName', 'lastName', 'email', 'gender', 'mobile', 'birthDate', 'subjects', 'hobbies', 'picture', 'address', 'state', 'city'];
     const fieldsToFill = options.fields || allFields;
 
-    if (fieldsToFill.includes('firstName')) {
-        cy.get(StudentRegistrationFormMapping.firstName).type(studentData.firstName);
-    }
-    if (fieldsToFill.includes('lastName')) {
-        cy.get(StudentRegistrationFormMapping.lastName).type(studentData.lastName);
-    }
-    if (fieldsToFill.includes('email')) {
-        cy.get(StudentRegistrationFormMapping.email).type(studentData.email);
-    }
-    if (fieldsToFill.includes('gender')) {
-        cy.selectRandomGender();
-    }
-    if (fieldsToFill.includes('mobile')) {
-        cy.get(StudentRegistrationFormMapping.mobile).type(studentData.mobile);
-    }
-    if (fieldsToFill.includes('birthDate')) {
-        cy.selectBirthDate(studentData.birthDate);
-    }
-    if (fieldsToFill.includes('subjects') && studentData.subjects) {
-        studentData.subjects.forEach(subject => {
-            cy.get(StudentRegistrationFormMapping.subjects).type(subject);
-            cy.get('.subjects-auto-complete__option').contains(subject).click();
-        });
-    }
-    if (fieldsToFill.includes('hobbies')) {
-        cy.selectRandomHobbies();
-    }
-    if (fieldsToFill.includes('picture')) {
-        cy.uploadRandomPicture();
-    }
-    if (fieldsToFill.includes('address')) {
-        cy.get(StudentRegistrationFormMapping.address).type(studentData.address);
-    }
-    if (fieldsToFill.includes('state')) {
-        cy.selectRandomDropdownOption(StudentRegistrationFormMapping.state);
-    }
-    if (fieldsToFill.includes('city')) {
-        cy.selectRandomDropdownOption(StudentRegistrationFormMapping.city);
-    }
+    const fieldHandlers = {
+        firstName: () => cy.get(selectors.firstName).type(studentData.firstName),
+        lastName: () => cy.get(selectors.lastName).type(studentData.lastName),
+        email: () => cy.get(selectors.email).type(studentData.email),
+        gender: () => cy.selectRandomGender(),
+        mobile: () => cy.get(selectors.mobile).type(studentData.mobile),
+        birthDate: () => cy.selectBirthDate(studentData.birthDate),
+        subjects: () => {
+            studentData.subjects.forEach(subject => {
+                cy.get(selectors.subjects).type(subject);
+                cy.get('.subjects-auto-complete__option').contains(subject).click();
+            });  
+        },
+        hobbies: () => cy.selectRandomHobbies(),
+        picture: () => cy.uploadRandomPicture(),
+        address: () => cy.get(selectors.address).type(studentData.address),
+        state: () => cy.selectRandomDropdownOption(selectors.state),
+        city: () => cy.selectRandomDropdownOption(selectors.city),
+    };
+
+    fieldsToFill.forEach(field => {
+        if (fieldHandlers[field]) {
+            fieldHandlers[field]();
+        }
+    });
+});
+
+Cypress.Commands.add('submitForm', () => {
+    cy.get(selectors.submit).click();
 });
 
 Cypress.Commands.add('selectBirthDate', (birthDate) => {
-    cy.get(StudentRegistrationFormMapping.dateOfBirth).click();
+    cy.get(selectors.dateOfBirth).click();
     cy.get('.react-datepicker__month-select').select(birthDate.month);
     cy.get('.react-datepicker__year-select').select(birthDate.year);
     cy.get(`.react-datepicker__day:not(.react-datepicker__day--outside-month)`)
@@ -77,6 +80,7 @@ Cypress.Commands.add('selectRandomGender', () => {
 
         cy.get(genderSelector).eq(randomIndex).invoke('val').then(selectedValue => {
             cy.log(`**Gênero Selecionado:** ${selectedValue}`);
+            cy.wrap(selectedValue).as('selectedGender');
         });
     });
 });
@@ -134,13 +138,24 @@ Cypress.Commands.add('selectRandomDropdownOption', (containerSelector) => {
     });
 });
 
-Cypress.Commands.add('clickOnSR', (buttonText) => {
-    if (buttonText.toLowerCase() === 'submit') {
-        cy.get(StudentRegistrationFormMapping.submit).click();
-    } else if (buttonText.toLowerCase() === 'close') {
-        cy.get('#closeLargeModal').click({ force: true });
-    } else {
-        cy.contains('button', buttonText).click({ force: true });
-    }   
-    cy.log(`**Clicou no botão:** ${buttonText}`);
+Cypress.Commands.add('closeModal', () => {
+    cy.get(selectors.modal.closeButton).click({ force: true });
+});
+
+Cypress.Commands.add('verifySubmissionModal', (studentData) => {
+    cy.get(selectors.modal.content).should('be.visible');
+    cy.get(selectors.modal.title).should('have.text', 'Thanks for submitting the form');
+
+    selectors.modal.tableRow('Student Name').should('contain.text', `${studentData.firstName} ${studentData.lastName}`);
+    cy.get('@selectedGender').then(selectedGender => {
+        selectors.modal.tableRow('Gender').should('have.text', selectedGender);
+    });
+    selectors.modal.tableRow('Mobile').should('contain.text', studentData.mobile);
+});
+
+Cypress.Commands.add('verifyFormValidation', () => {
+    cy.get(selectors.modal.content).should('not.exist');
+    cy.get(selectors.firstName).should('have.css', 'border-color', 'rgb(220, 53, 69)');
+    cy.get(selectors.lastName).should('have.css', 'border-color', 'rgb(220, 53, 69)');
+    cy.get(selectors.mobile).should('have.css', 'border-color', 'rgb(220, 53, 69)');
 });
