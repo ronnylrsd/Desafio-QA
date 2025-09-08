@@ -1,23 +1,20 @@
 import { When, Then } from 'cypress-cucumber-preprocessor/steps'
-import users from '../../../fixtures/users.json'
 import { generateValidUser } from '../../factories/userFactory';
 
 When('o usuário tenta se cadastrar com dados válidos', () => {
     const validUser = generateValidUser();
-    cy.log(`Username: ${validUser.userName}`);
-    cy.log(`Password: ${validUser.password}`);
-    cy.postUser(validUser).as('response');
+    cy.postUser(validUser);
 });
 
 Then('o sistema deve criar o Usuário com sucesso', () => {
-    cy.get('@response').then((response) => {
-        cy.log(`Response: ${JSON.stringify(response.body)}`);
-    });
     cy.checkPostUserResponse('success');
 });
 
 When('o usuário tenta criar um usuário com uma senha simples' , () => {
-    cy.postUser(users.userWithBadPassword).as('response');
+    const userWithBadPassword = generateValidUser({ password: '123' });
+    cy.log(`Username: ${userWithBadPassword.userName}`);
+    cy.log(`Password: ${userWithBadPassword.password}`);
+    cy.postUser(userWithBadPassword);
 });
 
 Then('o sistema não permite se cadastrar com uma senha simples' , () => {
@@ -25,7 +22,9 @@ Then('o sistema não permite se cadastrar com uma senha simples' , () => {
 });
 
 When('o usuário tenta se recadastrar' , () => {
-    cy.postUser(users.existingUser).as('response');
+    const existingUser = generateValidUser();
+    cy.postUser(existingUser);
+    cy.postUser(existingUser);
 });
 
 Then('o sistema não deve permitir o usuário ser cadastrado novamente' , () => {
