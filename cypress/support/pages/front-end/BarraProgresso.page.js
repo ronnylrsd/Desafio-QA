@@ -19,24 +19,25 @@ Cypress.Commands.add('clickOn', (button) => {
     }
 });
 
-Cypress.Commands.add('stopProgressBarInRange', (minValue, maxValue) => {
-    const checkAndStop = (retries = 100) => {
-        if (retries < 0) {
-            throw new Error('Não foi possível parar a barra de progresso na janela desejada.');
+Cypress.Commands.add('checkAndStopProgress', (minValue, maxValue, retries = 100) => {
+    if (retries < 0) {
+        throw new Error('Não foi possível parar a barra de progresso na janela desejada.');
+    }
+    cy.getProgressBarValue().then(currentValue => {
+        if (currentValue >= maxValue) {
+            throw new Error(`A barra de progresso (valor: ${currentValue}%) ultrapassou o limite de ${maxValue}% antes de ser parada.`);
         }
-        cy.getProgressBarValue().then(currentValue => {
-            if (currentValue >= maxValue) {
-                throw new Error(`A barra de progresso (valor: ${currentValue}%) ultrapassou o limite de ${maxValue}% antes de ser parada.`);
-            }
-            if (currentValue >= minValue) {
-                cy.clickOn('Stop');
-            } else {
-                cy.wait(50);
-                checkAndStop(retries - 1);
-            }
-        });
-    };
-    checkAndStop();
+        if (currentValue >= minValue) {
+            cy.get(ProgressBarMapping.startStopButton).click();
+        } else {
+            cy.wait(50);
+            cy.checkAndStopProgress(minValue, maxValue, retries - 1);
+        }
+    });
+});
+
+Cypress.Commands.add('stopProgressBarInRange', (minValue, maxValue) => {
+    cy.checkAndStopProgress(minValue, maxValue);
 });
 
 Cypress.Commands.add('getProgressBarValue', () => {
